@@ -1,17 +1,21 @@
-def get_query(cmd, val, file):
+from typing import List, Union, TextIO, Any
+import re
+
+
+def get_query(cmd: str, val: str, file: Union[str, List, TextIO]) -> Union[str, List]:
     if cmd == 'filter':
-        res = list(filter(lambda x: val in x, file))
+        return list(filter(lambda x: val in x, file))
     if cmd == 'map':
-        res = '\n'.join([x.split()[int(val)] for x in file])
-
+        return '\n'.join([x.split()[int(val)] for x in file])
     if cmd == 'unique':
-        res = list(set(file))
-
+        return list(set(file))
     if cmd == 'sort':
         is_reverse = val == 'desc'
-        res = sorted(file, reverse=is_reverse)
-
+        return sorted(file, reverse=is_reverse)
     if cmd == 'limit':
-        res = list(file)[:int(val)]
+        return list(file)[:int(val)]
+    if cmd == "regex":
+        regexp: re.Pattern = re.compile(val)
+        return list(filter(lambda v: regexp.findall(v), file))
 
-    return res
+    return ''
